@@ -17,9 +17,21 @@ if (process.env.NODE_ENV === "production") {
 //app.use(routes);
 app.use(apiRoutes)
 // Connect to the Mongo DB
-mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://localhost/nytreact"
-);
+
+
+// If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/nytreact";
+
+// Set mongoose to leverage built in JavaScript ES6 Promises
+// Connect to the Mongo DB
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI, {
+  useMongoClient: true
+});
+
+
+
+
 
 // Define any API routes before this runs
 app.get("*", function(req, res) {
